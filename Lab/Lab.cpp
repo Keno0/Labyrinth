@@ -194,6 +194,307 @@ public:
 			}
 		}
 	}
+
+	void CalculateSteps()
+	{
+		for (int i = 0; i < k; i++)
+		{
+
+			for (int j = 0; j < n * 2; j++)
+			{
+				if (labyrinthStepValues[i][j] != 0)
+				{
+					//1.sor elso fele
+					if (i == 0 && j < n)
+					{
+						if (labyrinthValues[i][j] == 'M')
+						{
+							if (j != 0)
+							{
+								if (labyrinthValues[i][j + n - 1] != 'W')
+								{
+									if (labyrinthStepValues[i][j + n - 1] == -1)
+									{
+										labyrinthStepValues[i][j + n - 1] = 2;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j + n - 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j + n - 1] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+							}
+							if (labyrinthValues[i][j + n ] != 'W')
+							{
+								if (labyrinthStepValues[i][j + n ] == -1)
+								{
+									labyrinthStepValues[i][j + n ] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j + n ] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i][j + n ] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+
+							}
+
+							if (labyrinthValues[i+1][j] != 'W')
+							{
+								if (labyrinthStepValues[i+1][j] == -1)
+								{
+									labyrinthStepValues[i+1][j] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i+1][j] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i+1][j] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+
+							}
+						}
+						else
+						{
+							if (j != 0)
+							{
+								if (labyrinthValues[i][j + n - 1] != 'W')
+								{
+									if (labyrinthStepValues[i][j + n - 1] == -1)
+									{
+										labyrinthStepValues[i][j + n - 1] = 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j + n - 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j + n - 1] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+							}
+
+							if (labyrinthValues[i][j + n] != 'W')
+							{
+								if (labyrinthStepValues[i][j + n] == -1)
+								{
+									labyrinthStepValues[i][j + n] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j + n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i][j + n] = labyrinthStepValues[i][j];
+									}
+								}
+
+							}
+
+							if (labyrinthValues[i + 1][j] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j] == -1)
+								{
+									labyrinthStepValues[i + 1][j] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j] ;
+									}
+								}
+
+							}
+						}
+					} 
+					//1.sor masodik fele
+					else if (i == 0 && j >= n)
+					{
+						if (labyrinthValues[i][j] == 'M') {
+							if (j != n - 1)
+							{
+								if (labyrinthValues[i + 1][j - n + 1] != 'W')
+								{
+									if (labyrinthStepValues[i + 1][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n + 1] = 2;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+							}
+							if (labyrinthValues[i + 1][j - n] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j - n] == -1)
+								{
+									labyrinthStepValues[i + 1][j - n] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+
+							}
+
+							if (labyrinthValues[i + 1][j] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j] == -1)
+								{
+									labyrinthStepValues[i + 1][j] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+
+							}
+						}
+
+						else
+						{
+							if (j != n - 1)
+							{
+								if (labyrinthValues[i + 1][j - n + 1] != 'W')
+								{
+									if (labyrinthStepValues[i][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i][j - n + 1] = 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+							}
+
+							if (labyrinthValues[i + 1][j - n] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j - n] == -1)
+								{
+									labyrinthStepValues[i + 1][j - n] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j];
+									}
+								}
+
+							}
+
+							if (labyrinthValues[i + 1][j] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j] == -1)
+								{
+									labyrinthStepValues[i + 1][j] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j];
+									}
+								}
+
+							}
+						}
+
+					}
+					//bal oldal, kiveve az elso sort
+					else if (j == 0)
+					{
+						if (labyrinthValues[i][j] == 'M')
+						{
+							if (labyrinthValues[i][j + n] != 'W')
+							{
+								if (labyrinthStepValues[i][j + n ] == -1)
+								{
+									labyrinthStepValues[i][j + n] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j + n ] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i][j + n ] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+							}
+
+							if (labyrinthValues[i-1][j + n] != 'W')
+							{
+								if (labyrinthStepValues[i-1][j + n] == -1)
+								{
+									labyrinthStepValues[i-1][j + n] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i-1][j + n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i-1][j + n] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+							}
+						}
+						else
+						{
+							if (labyrinthValues[i][j + n] != 'W')
+							{
+								if (labyrinthStepValues[i][j + n] == -1)
+								{
+									labyrinthStepValues[i][j + n] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j + n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i][j + n] = labyrinthStepValues[i][j];
+									}
+								}
+							}
+
+							if (labyrinthValues[i - 1][j + n] != 'W')
+							{
+								if (labyrinthStepValues[i - 1][j + n] == -1)
+								{
+									labyrinthStepValues[i - 1][j + n] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i - 1][j + n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i - 1][j + n] = labyrinthStepValues[i][j];
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 };
 
 void main()
@@ -202,6 +503,7 @@ void main()
 	labyrinth.ReadDimensions();
 	labyrinth.ReadLabyrinth();
 	labyrinth.Check();
+	labyrinth.CalculateSteps();
 	labyrinth.PrintOutLab();
 	labyrinth.PrintOutLabStepValues();
 
