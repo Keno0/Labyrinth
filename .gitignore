@@ -58,3 +58,4 @@ Lab/Debug/vc140.idb
 *.pdb
 Lab/Lab.vcxproj
 *.filters
+*.opendb
