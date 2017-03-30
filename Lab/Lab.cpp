@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -19,6 +20,31 @@ public:
 	{
 		cin >> k;
 		cin >> n;
+	}
+
+	void ReadDimensionFromFile()
+	{
+		ifstream infile;
+		string line = "";
+		infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test1.txt");
+		getline(infile, line);
+		k = 5;
+		n = 6;
+
+		labyrinthStepValues = new int*[k];
+		for (int i = 0; i < k; ++i)
+			labyrinthStepValues[i] = new int[n * 2];
+		for (int i = 0; i < k; i++)
+		{
+			getline(infile, line);
+
+			for (int j = 0; j < n * 2; j++)
+			{
+
+				labyrinthValues[i][j] = line[j * 2];
+				labyrinthStepValues[i][j] = -1;
+			}
+		}
 	}
 
 	void ReadLabyrinth()
@@ -491,6 +517,74 @@ public:
 							}
 						}
 					}
+					//jobb oldal, kiveve az elso sort
+					else if (j == 2*n-1 && i < k-1)
+					{
+						if (labyrinthValues[i][j] == 'M')
+						{
+							if (labyrinthValues[i][j - n] != 'W')
+							{
+								if (labyrinthStepValues[i][j - n] == -1)
+								{
+									labyrinthStepValues[i][j - n] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j - n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+							}
+
+							if (labyrinthValues[i + 1][j - n] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j - n] == -1)
+								{
+									labyrinthStepValues[i + 1][j - n] = 2;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j] + 1;
+									}
+								}
+							}
+						}
+						else
+						{
+							if (labyrinthValues[i][j - n] != 'W')
+							{
+								if (labyrinthStepValues[i][j - n] == -1)
+								{
+									labyrinthStepValues[i][j - n] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j - n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j];
+									}
+								}
+							}
+
+							if (labyrinthValues[i + 1][j - n] != 'W')
+							{
+								if (labyrinthStepValues[i + 1][j - n] == -1)
+								{
+									labyrinthStepValues[i + 1][j - n] = 1;
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j];
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -500,8 +594,9 @@ public:
 void main()
 {
 	Labyrinth labyrinth;
-	labyrinth.ReadDimensions();
-	labyrinth.ReadLabyrinth();
+	//labyrinth.ReadDimensions();
+	//labyrinth.ReadLabyrinth();
+	labyrinth.ReadDimensionFromFile();
 	labyrinth.Check();
 	labyrinth.CalculateSteps();
 	labyrinth.PrintOutLab();
