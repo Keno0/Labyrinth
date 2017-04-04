@@ -221,6 +221,11 @@ public:
 		}
 	}
 
+	int NoWall_Monitor(int current, int oddLeftDownValue, char oddLeftDownType)
+	{
+
+	}
+
 	void CalculateSteps()
 	{
 		for (int i = 0; i < k; i++)
@@ -585,6 +590,572 @@ public:
 							}
 						}
 					}
+					//belso resz lefele frissit
+					else if (i < k - 1)
+					{
+						//elso resz
+						if ( j < n)
+						{
+							if (labyrinthValues[i][j] == 'M')
+							{
+								
+								if (labyrinthValues[i][j + n - 1] != 'W') //also bal 6szog
+								{
+									if (labyrinthStepValues[i][j + n - 1] == -1)
+									{
+										labyrinthStepValues[i][j + n - 1] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j + n - 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j + n - 1] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								
+								if (labyrinthValues[i][j + n] != 'W') //also jobb 6szog
+								{
+									if (labyrinthStepValues[i][j + n] == -1)
+									{
+										labyrinthStepValues[i][j + n] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j + n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j + n] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i-1][j + n - 1] != 'W') //felso bal 6szog
+								{
+									if (labyrinthStepValues[i-1][j + n - 1] == -1)
+									{
+										labyrinthStepValues[i-1][j + n - 1] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i-1][j + n - 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i-1][j + n - 1] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+
+								if (labyrinthValues[i-1][j + n] != 'W') //felso jobb 6szog
+								{
+									if (labyrinthStepValues[i-1][j + n] == -1)
+									{
+										labyrinthStepValues[i-1][j + n] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i-1][j + n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i-1][j + n] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i + 1][j] != 'W') //Lenti 6szog
+								{
+									if (labyrinthStepValues[i + 1][j] == -1)
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i - 1][j] != 'W') // Fenti hatszog
+								{
+									if (labyrinthStepValues[i - 1][j] == -1)
+									{
+										labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+							}
+							else // Ha nincs monitor
+							{
+								
+								if (labyrinthValues[i-1][j +n -1] != 'W' && labyrinthValues[i][j + n] != 'W') //bal felso es jobb also nem fal
+								{
+									if (labyrinthStepValues[i][j + n ] == -1)
+									{
+										labyrinthStepValues[i][j + n ] = labyrinthValues[i][j ];
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j + n ] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j + n ] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i - 1][j + n ] != 'W' && labyrinthValues[i][j + n-1] != 'W') // felso jobb es also bal nem fal
+								{
+									if (labyrinthStepValues[i][j + n-1] == -1)
+									{
+										labyrinthStepValues[i][j + n-1] = labyrinthValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j + n-1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j + n-1] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i - 1][j] != 'W' && labyrinthValues[i+1][j] != 'W') // felso es also nem fal
+								{
+									if (labyrinthStepValues[i+1][j] == -1)
+									{
+										labyrinthStepValues[i+1][j] = labyrinthValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i+1][j ] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i+1][j ] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+
+								
+							}
+						}
+						//1.sor masodik fele
+						//elso resz
+						else if (j >= n)
+						{
+							if (labyrinthValues[i][j] == 'M')
+							{
+
+								if (labyrinthValues[i + 1][j - n] != 'W') //also bal 6szog
+								{
+									if (labyrinthStepValues[i + 1][j - n] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+
+								if (labyrinthValues[i + 1][j - n + 1] != 'W') //also jobb 6szog
+								{
+									if (labyrinthStepValues[i + 1][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i][j - n] != 'W') //felso bal 6szog
+								{
+									if (labyrinthStepValues[i][j - n] == -1)
+									{
+										labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+
+								if (labyrinthValues[i][j - n + 1] != 'W') //felso jobb 6szog
+								{
+									if (labyrinthStepValues[i][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i + 1][j] != 'W') //Lenti 6szog
+								{
+									if (labyrinthStepValues[i + 1][j] == -1)
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+
+								if (labyrinthValues[i - 1][j] != 'W') // Fenti hatszog
+								{
+									if (labyrinthStepValues[i - 1][j] == -1)
+									{
+										labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j] + 1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j] + 1;
+										}
+									}
+
+								}
+							}
+							else // Ha nincs monitor
+							{
+
+								if (labyrinthValues[i][j - n] != 'W' && labyrinthValues[i + 1][j - n + 1] != 'W') //bal felso es jobb also nem fal
+								{
+									if (labyrinthStepValues[i + 1][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n + 1] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+								if (labyrinthValues[i][j - n + 1] != 'W' && labyrinthValues[i + 1][j - n] != 'W') // felso jobb es also bal nem fal
+								{
+									if (labyrinthStepValues[i + 1][j - n] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i + 1][j - n] == -1)
+									{
+										labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j - n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j - n] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+								if (labyrinthValues[i - 1][j] != 'W' && labyrinthValues[i + 1][j] != 'W') // felso es also nem fal
+								{
+									if (labyrinthStepValues[i + 1][j] == -1)
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+
+								else
+								{
+									if (labyrinthStepValues[i + 1][j] == -1)
+									{
+										labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i + 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i + 1][j] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+							}
+						}
+
+							
+					}
+					//belso resz felfele frissit
+					else if (i < k - 1)
+					{
+						//elso resz
+						if (j < n)
+						{
+							
+							
+
+								if (labyrinthValues[i - 1][j + n - 1] != 'W' && labyrinthValues[i][j + n] != 'W') //bal felso es jobb also nem fal
+								{
+									if (labyrinthStepValues[i - 1][j + n - 1] == -1)
+									{
+										labyrinthStepValues[i - 1][j + n - 1] = labyrinthValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j + n - 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j + n - 1] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i - 1][j + n - 1] == -1)
+									{
+										labyrinthStepValues[i - 1][j + n - 1] = labyrinthValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j + n - 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j + n - 1] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+								if (labyrinthValues[i - 1][j + n] != 'W' && labyrinthValues[i][j + n - 1] != 'W') // felso jobb es also bal nem fal
+								{
+									if (labyrinthStepValues[i - 1][j + n] == -1)
+									{
+										labyrinthStepValues[i - 1][j + n] = labyrinthValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j + n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j + n] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i - 1][j + n] == -1)
+									{
+										labyrinthStepValues[i - 1][j + n] = labyrinthValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j + n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j + n] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+								if (labyrinthValues[i - 1][j] != 'W' && labyrinthValues[i + 1][j] != 'W') // felso es also nem fal
+								{
+									if (labyrinthStepValues[i - 1][j] == -1)
+									{
+										labyrinthStepValues[i - 1][j] = labyrinthValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i - 1][j] == -1)
+									{
+										labyrinthStepValues[i - 1][j] = labyrinthValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+
+							
+						}
+						//1.sor masodik fele
+						//elso resz
+						else if (j >= n)
+						{
+							
+
+								if (labyrinthValues[i][j - n] != 'W' && labyrinthValues[i + 1][j - n + 1] != 'W') //bal felso es jobb also nem fal
+								{
+									if (labyrinthStepValues[i][j - n] == -1)
+									{
+										labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j - n] == -1)
+									{
+										labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+								if (labyrinthValues[i][j - n + 1] != 'W' && labyrinthValues[i + 1][j - n] != 'W') // felso jobb es also bal nem fal
+								{
+									if (labyrinthStepValues[i][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i][j - n + 1] == -1)
+									{
+										labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i][j - n + 1] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i][j - n + 1] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+
+								if (labyrinthValues[i - 1][j] != 'W' && labyrinthValues[i + 1][j] != 'W') // felso es also nem fal
+								{
+									if (labyrinthStepValues[i - 1][j] == -1)
+									{
+										labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j];
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j];
+										}
+									}
+
+								}
+								else
+								{
+									if (labyrinthStepValues[i - 1][j] == -1)
+									{
+										labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j]+1;
+									}
+									else
+									{
+										if (labyrinthStepValues[i - 1][j] > labyrinthStepValues[i][j])
+										{
+											labyrinthStepValues[i - 1][j] = labyrinthStepValues[i][j]+1;
+										}
+									}
+								}
+							
+						}
+
+
+					}
 				}
 			}
 		}
@@ -598,7 +1169,8 @@ void main()
 	//labyrinth.ReadLabyrinth();
 	labyrinth.ReadDimensionFromFile();
 	labyrinth.Check();
-	labyrinth.CalculateSteps();
+	for(int i=0; i < 6; i++)
+		labyrinth.CalculateSteps();
 	labyrinth.PrintOutLab();
 	labyrinth.PrintOutLabStepValues();
 
