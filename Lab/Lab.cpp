@@ -15,8 +15,9 @@ using namespace std;
 class AdjListNode
 {
 	int v;
-	int color;
+	
 public:
+	int color;
 	AdjListNode(int _v, int _w)
 	{
 		v = _v;
@@ -32,12 +33,26 @@ public:
 	}
 };
 
+class Result
+{
+public:
+	int startIndex = 0;
+	int endIndex = 0;
+	int length = 0;
+};
+
 // Class to represent a graph using adjacency list representation
 class Graph
 {
 	
-
+	list<Result> *result;
 	int V; // No. of vertices’
+	int prevColor = -1;
+	int pathCounter = 0;
+	int *listOfMonitor;
+	int numberOfMonitor = 0;
+	int currentStartingPoint = 0;
+	
 
 		   // Pointer to an array containing adjacency lists
 	list<AdjListNode> *adj;
@@ -45,6 +60,7 @@ class Graph
 	// A function used by longestPath
 	void printAllPathsUtil(int, int, bool[], int[], int &);
 public:
+	int *bestPaths;
 	Graph(int V); // Constructor
 
 				  // function to add an edge to graph
@@ -52,6 +68,27 @@ public:
 
 	// Finds longest distances from given source vertex
 	void printAllPaths(int s, int d);
+
+	void SetListOfMonitor(int *list, int size)
+	{
+		listOfMonitor = new int[size];
+		numberOfMonitor = size;
+		for (int i = 0; i < size; i++)
+		{
+			listOfMonitor[i] = list[i];
+		}
+
+	}
+
+	bool isThisVertexMonitor(int vertex)
+	{
+		for (int i = 0; i < numberOfMonitor; i++)
+		{
+			if (vertex == listOfMonitor[i])
+				return true;
+		}
+		return false;
+	}
 
 
 };
@@ -62,6 +99,12 @@ Graph::Graph(int V) // Constructor
 {
 	this->V = V;
 	adj = new list<AdjListNode>[V];
+	bestPaths = new int[V];
+
+
+	for(int i =0; i<V; i++)
+		bestPaths[i]= 100000;
+
 
 }
 
@@ -78,6 +121,8 @@ void Graph::printAllPaths(int s, int d)
 {
 	// Mark all the vertices as not visited
 	bool *visited = new bool[V];
+
+	currentStartingPoint = s;
 
 	// Create an array to store paths
 	int *path = new int[V];
@@ -102,18 +147,50 @@ void Graph::printAllPathsUtil(int u, int d, bool visited[],
 	visited[u] = true;
 	path[path_index] = u;
 	path_index++;
+	
 
 	// If current vertex is same as destination, then print
 	// current path[]
 	if (u == d)
 	{
+		list<AdjListNode>::iterator j;
 
 		for (int i = 0; i < path_index; i++)
 		{
-			cout << path[i] << " ";
-		}
+			if (i < path_index - 1)
+			{
+				for ( j = adj[path[i]].begin(); j != adj[path[i]].end(); ++j)
+				{
+					if (j->getV() == path[i + 1])
+					{
+						if (prevColor != j->color && isThisVertexMonitor(path[i]))
+						{
+							pathCounter++;
+							prevColor = j->color;
+						}
+						else if (prevColor != j->color)
+						{
+							pathCounter++;
+							prevColor = j->color;
+						}
+						else if (isThisVertexMonitor(path[i ]))
+						{
+							pathCounter++;
+						}
+						
+					}
+				}
+			}
+			//cout << path[i] << " ";
 
-		cout << endl;
+		}
+		prevColor = -1;
+		//cout <<"Path length:" << pathCounter<< endl;
+		if (bestPaths[currentStartingPoint] > pathCounter)
+		{
+			bestPaths[currentStartingPoint] = pathCounter;
+		}
+		pathCounter = 0;
 	}
 	else // If current vertex is not destination
 	{
@@ -143,15 +220,22 @@ class Labyrinth
 	int column = 0;
 	int numberOfVertex = 0;
 	char **labyrinthCharacters;
+	int numberOfEndPoints = 0;
+	int numberOfInsidePoints = 0;
+	int numberOfMonitors = 0;
+	int *listOfEndPoints;
+	int *listOfInsidePoints;
+	int *monitors;
 
 public:
 	Labyrinth()
 	{
 		ReadDatasFromFile();
 		g = new Graph(numberOfVertex);
+		g->SetListOfMonitor(monitors, numberOfMonitors);
 		CreateEdges();
-		int s = 1, d = 8;
-		g->printAllPaths(s, d);
+		FindAllPathBetweenTwoPoints();
+		
 	}
 
 	void ReadDatasFromFile()
@@ -169,11 +253,62 @@ public:
 			for (int j = 0; j < 2 * column; j++)
 				infile >> labyrinthCharacters[i][j];
 
-		//Counting the vertex
+		//Counting the vertex and the Monitors
 		for (int i = 0; i < row; i++)
 			for (int j = 0; j < 2 * column; j++)
+			{
 				if (labyrinthCharacters[i][j] == 'C' || labyrinthCharacters[i][j] == 'M')
-					numberOfVertex++;		
+					numberOfVertex++;
+				if (labyrinthCharacters[i][j] == 'M')
+					numberOfMonitors++;
+			}
+		
+		//Counting the endpoints
+		for (int i = 0; i < row; i++)
+			for (int j = 0; j < 2 * column; j++)
+				if (i == 0 || j == 0 || j == 2*column-1 || i==row-1)
+				{
+					if (labyrinthCharacters[i][j] == 'C' || labyrinthCharacters[i][j] == 'M')
+					{
+						numberOfEndPoints++;
+					}
+				}
+		//Store endpoint vertex index
+		numberOfInsidePoints = numberOfVertex - numberOfEndPoints;
+		listOfEndPoints = new int[numberOfEndPoints];
+		listOfInsidePoints = new int[numberOfInsidePoints];
+		monitors = new int[numberOfMonitors];
+		int k = 0;
+		int r = 0;
+		int h = 0;
+		for (int i = 0; i < row; i++)
+			for (int j = 0; j < 2 * column; j++)
+			{
+				if (i == 0 || j == 0 || j == 2 * column - 1 || i == row - 1)
+				{
+					if (labyrinthCharacters[i][j] == 'C' || labyrinthCharacters[i][j] == 'M')
+					{
+						listOfEndPoints[k] = IndexOfVertex(i, j);
+						k++;
+					}
+				}
+				else
+				{
+					if (labyrinthCharacters[i][j] == 'C' || labyrinthCharacters[i][j] == 'M')
+					{
+						listOfInsidePoints[r] = IndexOfVertex(i, j);
+						r++;
+					}
+				}
+
+				if (labyrinthCharacters[i][j] == 'M')
+				{
+					monitors[h] = IndexOfVertex(i, j);
+					h++;
+				}
+			}
+
+		
 	}
 
 	void CreateEdges()
@@ -209,7 +344,7 @@ public:
 					}
 					else if (j >= column && i < row - 1) // sor masodik fele
 					{
-						if (labyrinthCharacters[i + 1][j - column] == 'C' || labyrinthCharacters[i][j - column] == 'M')//bal alsó szomszéd
+						if (labyrinthCharacters[i + 1][j - column] == 'C' || labyrinthCharacters[i+1][j - column] == 'M')//bal alsó szomszéd
 						{
 							//Create Edge both way blue color (0)
 							g->addEdge(IndexOfVertex(i, j), IndexOfVertex(i+1, j - column), 0);
@@ -253,6 +388,81 @@ public:
 
 		return index-1;
 	}
+
+	bool IsItEndPoint(int index)
+	{
+		for (int i = 0; i < numberOfEndPoints; i++)
+		{
+			if (listOfEndPoints[i] == index)
+				return true;
+		}
+
+		return false;
+	}
+
+	void FindAllPathBetweenTwoPoints()
+	{
+		int s = 0, d = 0;
+		for (int i = 0; i < numberOfEndPoints; i++)
+		{
+			for (int j = 0; j < numberOfInsidePoints; j++)
+			{
+				
+				g->printAllPaths( listOfInsidePoints[j], listOfEndPoints[i]);
+			}
+		}
+
+		int counterOfHighest = 0;
+		int highestValue = 0;
+		for (int i = 0; i < numberOfVertex; i++)
+		{
+			//cout << i<<" "<< g->bestPaths[i] << endl;
+			if (!IsItEndPoint(i) && g->bestPaths[i] != 100000)
+			{
+				if (g->bestPaths[i] > highestValue)
+					highestValue = g->bestPaths[i];
+			}
+
+		}
+
+		for (int i = 0; i < numberOfVertex; i++)
+		{
+			if (g->bestPaths[i] == highestValue)
+				counterOfHighest++;
+		}
+
+		cout << counterOfHighest << " " << highestValue << endl;
+		int letterCounter = 0;
+
+		for (int i = 0; i < numberOfVertex; i++)
+		{
+			if (g->bestPaths[i] == highestValue)
+			{
+				for (int k = 0; k < row; k++)
+				{
+					for (int j = 0; j < column * 2; j++)
+					{
+						if (labyrinthCharacters[k][j] == 'C' || labyrinthCharacters[k][j] == 'M')
+						{
+							
+							if (letterCounter == i)
+							{
+								cout << k+1 << " " << j+1 << endl;
+								k = row;
+								j = column * 2;
+								
+							}
+							letterCounter++;
+						}
+					}
+				}
+
+				letterCounter = 0;
+			}
+		}
+
+		
+	}
 };
 
 
@@ -266,21 +476,6 @@ int main()
 	// 0=r, 1=s, 2=t, 3=x, 4=y, 5=z
 	
 	Labyrinth labyrinth;
-		
-		Graph g(4);
-
-		g.addEdge(0, 1, 0);
-		g.addEdge(1, 2, 0);
-		g.addEdge(2, 3, 0);
-		g.addEdge(0, 3, 0);
-
-
-		int s = 1, d = 8;
-		g.printAllPaths(s, d);
-
-
-		
-
 
 	return 0;
 }
