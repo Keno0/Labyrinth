@@ -241,7 +241,7 @@ public:
 	void ReadDatasFromFile()
 	{
 		ifstream infile;
-		infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test1.txt");
+		infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test2.txt");
 		infile >> row;
 		infile >> column;
 		labyrinthCharacters = new char*[row];
