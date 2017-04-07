@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 #define NINF INT_MIN
-#define READ_DATA_FROM_FILE 1
+#define READ_DATA_FROM_FILE 0
 #define RAND_MAX 2
 using namespace std;
 
@@ -471,25 +471,6 @@ using namespace std;
 				}
 		}
 
-		int IndexOfVertex(int row, int column)
-		{
-			int index = 0;
-			for (int i = 0; i < this->row; i++)
-				for (int j = 0; j < this->column * 2; j++)
-				{
-					if (labyrinthCharacters[i][j] == 'C' || labyrinthCharacters[i][j] == 'M')
-					{
-						index++;
-					}
-
-					if (i == row && j == column)
-						return index - 1;
-
-				}
-
-			return index - 1;
-		}
-
 		bool IsItEndPoint(int index)
 		{
 			for (int i = 0; i < numberOfEndPoints; i++)
@@ -578,14 +559,16 @@ int main()
 	
 	Labyrinth labyrinth;
 	/*fstream infile;
+	int a = 10;
+	int b = 10;
 	infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test4.txt");
-	infile << 500 << " " << 500 << endl;
+	infile << a << " " << b << endl;
 	int random = 0;
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < a; i++)
 	{
-		for (int j = 0; j < 1000; j++)
+		for (int j = 0; j < 2*b; j++)
 		{
-			random = std::rand()%10;
+			random = std::rand()%6;
 			switch (random)
 			{
 			case 1:
