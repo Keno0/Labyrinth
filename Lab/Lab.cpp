@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 #define NINF INT_MIN
-#define READ_DATA_FROM_FILE 0
+#define READ_DATA_FROM_FILE 1
 #define RAND_MAX 2
 using namespace std;
 
@@ -48,13 +48,16 @@ using namespace std;
 		int *listOfMonitor;
 		int numberOfMonitor = 0;
 		int currentStartingPoint = 0;
+		int *path;
+		int d = 0;
+		int path_index = 0; // Initialize path[] as empty
 
 
 		// Pointer to an array containing adjacency lists
 		list<AdjListNode> *adj;
 
 		// A function used by longestPath
-		void printAllPathsUtil(int, int, bool[], int[], int &);
+		void printAllPathsUtil(int, bool[]);
 	public:
 		int *bestPaths;
 		int callCounter = 0;
@@ -97,6 +100,7 @@ using namespace std;
 		this->V = V;
 		adj = new list<AdjListNode>[V];
 		bestPaths = new int[V];
+		path = new int[V];
 		
 
 
@@ -119,29 +123,28 @@ using namespace std;
 	{
 		// Mark all the vertices as not visited
 		bool *visited = new bool[V];
-
+		this->d = d;
 		currentStartingPoint = s;
 
-		// Create an array to store paths
-		int *path = new int[V];
-		int path_index = 0; // Initialize path[] as empty
+		// Create an array to store paths		
+		
 
 							// Initialize all vertices as not visited
 		for (int i = 0; i < V; i++)
 			visited[i] = false;
 
 		// Call the recursive helper function to print all paths
-		printAllPathsUtil(s, d, visited, path, path_index);
+		printAllPathsUtil(s, visited);
 
-		delete []path;
+		delete[] visited;
+
 	}
 
 	// A recursive function to print all paths from 'u' to 'd'.
 	// visited[] keeps track of vertices in current path.
 	// path[] stores actual vertices and path_index is current
 	// index in path[]
-	void Graph::printAllPathsUtil(int u, int d, bool visited[],
-		int path[], int &path_index)
+	void Graph::printAllPathsUtil(int u, bool visited[])
 	{
 		// Mark the current node and store it in path[]
 		visited[u] = true;
@@ -203,7 +206,7 @@ using namespace std;
 					if (!visited[i->getV()])
 					{
 						
-						printAllPathsUtil(i->getV(), d, visited, path, path_index);
+						printAllPathsUtil(i->getV(), visited);
 
 					}
 				}
@@ -250,7 +253,7 @@ using namespace std;
 		void ReadDatasFromFile()
 		{
 			ifstream infile;
-			infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test2.txt");
+			infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test4.txt");
 			infile >> row;
 			infile >> column;
 			labyrinthCharacters = new char*[row];
@@ -575,19 +578,16 @@ int main()
 	
 	Labyrinth labyrinth;
 	/*fstream infile;
-	infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test3.txt");
+	infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test4.txt");
 	infile << 500 << " " << 500 << endl;
 	int random = 0;
 	for (int i = 0; i < 500; i++)
 	{
 		for (int j = 0; j < 1000; j++)
 		{
-			random = std::rand()%3;
+			random = std::rand()%10;
 			switch (random)
 			{
-			case 0:
-				infile << "W" << " ";
-				break;
 			case 1:
 				infile << "C" << " ";
 				break;
@@ -595,6 +595,7 @@ int main()
 				infile << "M" << " ";
 				break;
 			default:
+				infile << "W" << " ";
 				break;
 			}
 
