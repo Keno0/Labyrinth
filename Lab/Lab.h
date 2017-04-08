@@ -65,7 +65,7 @@ public:
 
 	bool isThisVertexMonitor(int vertex);
 
-	void Graph::dfs(size_t start, size_t end, const vector<vector<size_t> > &graph);
+	void dfs(size_t start, size_t end, const vector<vector<size_t> > &graph);
 
 };
 
