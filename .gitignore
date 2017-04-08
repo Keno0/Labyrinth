@@ -76,5 +76,4 @@ Debug/ConsoleApplication2.dll.metagen
 Debug/DefaultTest.dll.metagen
 Lab/LabProgram.h
 *.nupkg
-*.h
 Lab/Lab.vcxproj.user

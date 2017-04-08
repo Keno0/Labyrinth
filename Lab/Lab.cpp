@@ -6,70 +6,28 @@
 #include <limits.h>
 #include <string>
 #include <fstream>
-#define NINF INT_MIN
-#define READ_DATA_FROM_FILE 0
-#define RAND_MAX 2
+#include "Lab.h"
+#include <ctime>
+
 using namespace std;
 
-// Graph is represented using adjacency list. Every node of adjacency list
-// contains vertex number of the vertex to which edge connects. It also
-// contains weight of the edge
+
+AdjListNode::AdjListNode(int _v, int _w)
+{
+	v = _v;
+	color = _w;
+}
+int AdjListNode::getV()
+{
+	return v;
+}
+int AdjListNode::getWeight()
+{
+	return color;
+}
 
 
-	class AdjListNode
-	{
-		int v;
-
-	public:
-		int color;
-		AdjListNode(int _v, int _w)
-		{
-			v = _v;
-			color = _w;
-		}
-		int getV()
-		{
-			return v;
-		}
-		int getWeight()
-		{
-			return color;
-		}
-	};
-
-
-	// Class to represent a graph using adjacency list representation
-	class Graph
-	{
-
-		int V; // No. of vertices’
-		int prevColor = -1;
-		int pathCounter = 0;
-		int *listOfMonitor;
-		int numberOfMonitor = 0;
-		int currentStartingPoint = 0;
-		int *path;
-		int d = 0;
-		int path_index = 0; // Initialize path[] as empty
-
-
-		// Pointer to an array containing adjacency lists
-		list<AdjListNode> *adj;
-
-		// A function used by longestPath
-		void printAllPathsUtil(int, bool[]);
-	public:
-		int *bestPaths;
-		int callCounter = 0;
-		Graph(int V); // Constructor
-
-					  // function to add an edge to graph
-		void addEdge(int u, int v, int color);
-
-		// Finds longest distances from given source vertex
-		void printAllPaths(int s, int d);
-
-		void SetListOfMonitor(int *list, int size)
+void Graph::SetListOfMonitor(int *list, int size)
 		{
 			listOfMonitor = new int[size];
 			numberOfMonitor = size;
@@ -79,8 +37,7 @@ using namespace std;
 			}
 
 		}
-
-		bool isThisVertexMonitor(int vertex)
+bool Graph::isThisVertexMonitor(int vertex)
 		{
 			for (int i = 0; i < numberOfMonitor; i++)
 			{
@@ -89,13 +46,7 @@ using namespace std;
 			}
 			return false;
 		}
-
-
-	};
-
-
-
-	Graph::Graph(int V) // Constructor
+Graph::Graph(int V) // Constructor
 	{
 		this->V = V;
 		adj = new list<AdjListNode>[V];
@@ -109,42 +60,53 @@ using namespace std;
 
 
 	}
-
-	void Graph::addEdge(int u, int v, int color)
+void Graph::addEdge(int u, int v, int color)
 	{
 		AdjListNode node(v, color);
 		adj[u].push_back(node); // Add v to u’s list
 	}
-
-
-
-	// Prints all paths from 's' to 'd'
-	void Graph::printAllPaths(int s, int d)
+void Graph::printAllPaths(int s, int d)
 	{
 		// Mark all the vertices as not visited
 		bool *visited = new bool[V];
 		this->d = d;
 		currentStartingPoint = s;
 
+		vector < vector<size_t>> graph;
+
+		graph.resize(V);
+		for (int j = 0; j < V; j++)
+		{
+			list<AdjListNode>::iterator i;
+			int k = 0;
+			graph[j].resize(adj[j].size());
+			for (i = adj[j].begin(); i != adj[j].end(); ++i)
+			{
+				graph[j][k] = i->getV();
+				k++;
+			}
+		}
+
+		dfs(s, d, graph);
+
 		// Create an array to store paths		
 		
 
 							// Initialize all vertices as not visited
-		for (int i = 0; i < V; i++)
+		/*for (int i = 0; i < V; i++)
 			visited[i] = false;
 
 		// Call the recursive helper function to print all paths
 		printAllPathsUtil(s, visited);
 
-		delete[] visited;
+		delete[] visited;*/
 
 	}
-
-	// A recursive function to print all paths from 'u' to 'd'.
+// A recursive function to print all paths from 'u' to 'd'.
 	// visited[] keeps track of vertices in current path.
 	// path[] stores actual vertices and path_index is current
 	// index in path[]
-	void Graph::printAllPathsUtil(int u, bool visited[])
+void Graph::printAllPathsUtil(int u, bool visited[])
 	{
 		// Mark the current node and store it in path[]
 		visited[u] = true;
@@ -218,25 +180,89 @@ using namespace std;
 		path_index--;
 		visited[u] = false;
 	}
+void Graph::dfs(size_t start, size_t end, const vector<vector<size_t> > &graph)
+{
 
+	//initialize:
+	//remember the node (first) and the index of the next neighbour (second)
+	typedef pair<size_t, size_t> State;
+	stack<State> to_do_stack;
+	vector<size_t> path; //remembering the way
 
-	class Labyrinth
+	vector<bool> visited(graph.size(), false); //caching visited - no need for searching in the path-vector 
+
+											   //start in start!
+	to_do_stack.push(make_pair(start, 0));
+	visited[start] = true;
+	path.push_back(start);
+
+	while (!to_do_stack.empty())
 	{
-		Graph *g;
-		int row = 0;
-		int column = 0;
-		int numberOfVertex = 0;
-		char **labyrinthCharacters;
-		int numberOfEndPoints = 0;
-		int numberOfInsidePoints = 0;
-		int numberOfMonitors = 0;
-		int *listOfEndPoints;
-		int *listOfInsidePoints;
-		int *monitors;
-		int **indexOfVertex;
+		State &current = to_do_stack.top();//current stays on the stack for the time being...
 
-	public:
-		Labyrinth()
+		if (current.first == end || current.second == graph[current.first].size())//goal reached or done with neighbours?
+		{
+			if (current.first == end)
+			{
+				list<AdjListNode>::iterator j;
+
+				for (int i = 0; i < path.size(); i++)
+				{
+					if (i < path.size() - 1)
+					{
+						for (j = adj[path[i]].begin(); j != adj[path[i]].end(); ++j)
+						{
+							if (j->getV() == path[i + 1])
+							{
+								if (prevColor != j->color && isThisVertexMonitor(path[i]))
+								{
+									pathCounter++;
+									prevColor = j->color;
+								}
+								else if (prevColor != j->color)
+								{
+									pathCounter++;
+									prevColor = j->color;
+								}
+								else if (isThisVertexMonitor(path[i]))
+								{
+									pathCounter++;
+								}
+
+							}
+						}
+					}
+					//cout << path[i] << " ";
+
+				}
+				prevColor = -1;
+				//cout <<"Path length:" << pathCounter<< endl;
+				if (bestPaths[currentStartingPoint] > pathCounter)
+				{
+					bestPaths[currentStartingPoint] = pathCounter;
+				}
+				pathCounter = 0;
+			}
+
+			//backtrack:
+			visited[current.first] = false;//no longer considered visited
+			path.pop_back();//go a step back
+			to_do_stack.pop();//no need to explore further neighbours         
+		}
+		else {//normal case: explore neighbours
+			size_t next = graph[current.first][current.second];
+			current.second++;//update the next neighbour in the stack!
+			if (!visited[next]) {
+				//putting the neighbour on the todo-list
+				to_do_stack.push(make_pair(next, 0));
+				visited[next] = true;
+				path.push_back(next);
+			}
+		}
+	}
+}
+
+Labyrinth::Labyrinth()
 		{
 #if(READ_DATA_FROM_FILE)
 			ReadDatasFromFile();
@@ -249,11 +275,10 @@ using namespace std;
 			FindAllPathBetweenTwoPoints();
 
 		}
-
-		void ReadDatasFromFile()
+void Labyrinth::ReadDatasFromFile()
 		{
 			ifstream infile;
-			infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test4.txt");
+			infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test5.txt");
 			infile >> row;
 			infile >> column;
 			labyrinthCharacters = new char*[row];
@@ -331,8 +356,7 @@ using namespace std;
 
 
 		}
-
-		void ReadDatasFromConsole()
+void Labyrinth::ReadDatasFromConsole()
 		{			
 			cin >> row;
 			cin >> column;
@@ -411,8 +435,7 @@ using namespace std;
 
 
 		}
-
-		void CreateEdges()
+void Labyrinth::CreateEdges()
 		{
 			for (int i = 0; i < row; i++)
 				for (int j = 0; j < 2 * column; j++)
@@ -470,8 +493,7 @@ using namespace std;
 					}
 				}
 		}
-
-		bool IsItEndPoint(int index)
+bool Labyrinth::IsItEndPoint(int index)
 		{
 			for (int i = 0; i < numberOfEndPoints; i++)
 			{
@@ -481,17 +503,23 @@ using namespace std;
 
 			return false;
 		}
-
-		void FindAllPathBetweenTwoPoints()
+void Labyrinth::FindAllPathBetweenTwoPoints()
 		{
+	clock_t start = clock();
+	clock_t end = 0;
 			int s = 0, d = 0;
 			for (int i = 0; i < numberOfEndPoints; i++)
 			{
 				for (int j = 0; j < numberOfInsidePoints; j++)
 				{
-
+					end = (double)(clock() - start) ;
+					if (end > 9000)
+						break;
 					g->printAllPaths(listOfInsidePoints[j], listOfEndPoints[i]);
 				}
+				
+				if (end > 9000)
+					break;
 			}
 
 			int counterOfHighest = 0;
@@ -545,47 +573,3 @@ using namespace std;
 
 
 		}
-	};
-
-
-
-
-// Driver program to test above functions
-int main()
-{
-	// Create a graph given in the above diagram.  Here vertex numbers are
-	// 0, 1, 2, 3, 4, 5 with following mappings:
-	// 0=r, 1=s, 2=t, 3=x, 4=y, 5=z
-	
-	Labyrinth labyrinth;
-	/*fstream infile;
-	int a = 10;
-	int b = 10;
-	infile.open("g:\\Kerti\\Projects\\ItechChallenge\\Labirint\\Lab\\test4.txt");
-	infile << a << " " << b << endl;
-	int random = 0;
-	for (int i = 0; i < a; i++)
-	{
-		for (int j = 0; j < 2*b; j++)
-		{
-			random = std::rand()%6;
-			switch (random)
-			{
-			case 1:
-				infile << "C" << " ";
-				break;
-			case 2:
-				infile << "M" << " ";
-				break;
-			default:
-				infile << "W" << " ";
-				break;
-			}
-
-		}
-		infile << endl;
-	}
-	infile.close();*/
-
-	return 0;
-}
